@@ -3,7 +3,7 @@ from markov import *
 
 def train_NN():
     nn = MarkovBrain()
-    TData = ["A B C D", "A B B A C C C C D D A A A C C CA J D A AS S JSAJAS", "ASJKASJJAS IASI A A A D D DK JJ D D D DK D"]
+    TData = ["A B C D", "A B B A"]
     print(TData)
     print("\n")
     nn.train(TData)

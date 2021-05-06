@@ -1,7 +1,6 @@
 import random
-import collections
 
-Possible use: https://stackoverflow.com/questions/8550912/dictionary-of-dictionaries-in-python
+#Possible use: https://stackoverflow.com/questions/8550912/dictionary-of-dictionaries-in-python
 
 class MarkovBrain():
     '''
@@ -9,7 +8,8 @@ class MarkovBrain():
     method and a method to generate text.
     '''
     def __init__(self):
-        self.states = {}
+        self.markov_matrix = dict()
+        self.states = set()
 
     def train(self, TData):
         '''
@@ -22,14 +22,16 @@ class MarkovBrain():
             for i in range(len(states_line)-1):
                 curr_word = states_line[i]
                 next_word = states_line[i+1]
-                #print("{} -> {}".format(curr_word, next_word))
-                if curr_word in self.states:
-                    print(self.states[curr_word])
-                    self.states[curr_word][next_word] += 1
+                print("{} -> {}".format(curr_word, next_word))
+                if curr_word in self.markov_matrix:
+                    if next_word in self.markov_matrix[curr_word]:
+                        self.markov_matrix[curr_word][next_word] += 1
+                    else:
+                        self.markov_matrix[curr_word][next_word] = 1
                 else:
-                    self.states[curr_word] = {next_word: 1}
-        print(self.states)
-
+                    self.markov_matrix[curr_word] = {next_word: 1}
+        print(self.markov_matrix)
+        print(len(self.markov_matrix))
 
     def gen_text():
         '''
