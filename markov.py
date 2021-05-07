@@ -24,10 +24,10 @@ class MarkovBrain():
             for i in range(len(states_line)-1):
                 curr_word = states_line[i]
                 next_word = states_line[i+1]
-                if curr_word not in self.states:
+                if curr_word not in self.states and i == 0:
                     self.states.append(curr_word)
-                if next_word not in self.states:
-                    self.states.append(next_word)
+                #if next_word not in self.states:
+                    #self.states.append(next_word)
                 if curr_word in self.markov_dict:
                     if next_word in self.markov_dict[curr_word]:
                         self.markov_dict[curr_word][next_word] += 1
@@ -40,23 +40,7 @@ class MarkovBrain():
             total_sum = sum(self.markov_dict[state].values())
             for path in self.markov_dict[state].keys():
                 self.markov_dict[state][path] = self.markov_dict[state][path]/total_sum
-
-        self.markov_matrix = np.zeros((len(self.states), len(self.states)))
-        for i in range(self.markov_matrix.shape[0]):
-            for j in range(self.markov_matrix.shape[1]):
-                prop_dict = self.markov_dict.get(self.states[i], 0)
-                if(type(prop_dict) is not int):
-                    self.markov_matrix[i][j] = prop_dict.get(self.states[j], 0) 
-                else: 
-                    self.markov_matrix[i][j] = prop_dict
-        np.set_printoptions(precision=10)
-        M = self.markov_matrix - np.identity(len(self.states))
-        M = np.transpose(M)
-        M[0] = np.ones(M.shape[0])
-        b = np.zeros(M.shape[0])
-        b[0] = 1
-        self.vector_state = np.linalg.solve(M, b)
-
+        
     def choose_next(self):
         edges = self.markov_dict.get(self.curr_state, 0)
         if(type(edges) is not int):
@@ -77,23 +61,10 @@ class MarkovBrain():
         prop = 0
         done = False
 
-        '''        
-        for i in range(len(self.vector_state)):
-            if (random.random() < self.vector_state[i] + prop):
-                self.curr_state = self.states[i]
-                quote += self.curr_state
-                break
-            #else:
-                #prop += self.vector_state[i]
-        '''
-
-        
         a = random.random()
-        print(a)
-        start_i = int(a * len(self.vector_state))
+        start_i = int(a * len(self.states))
         self.curr_state = self.states[start_i]
         quote += self.curr_state
-        
 
         while(done is False):
             next_word = self.choose_next()
@@ -126,7 +97,9 @@ if __name__ == '__main__':
 
         nn = MarkovBrain()
         nn.train(content)
+        for i in (range(10)):
+            print(nn.gen_text())
+        
         nn.save(sys.argv[2])
-        print(nn.gen_text())
     except Exception as e:
         print(e)
