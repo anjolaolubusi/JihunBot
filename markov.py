@@ -89,7 +89,6 @@ class MarkovBrain():
             else:
                 done = True
         
-        print("Generated Text: {}".format(quote))
         return quote
 
     def save(self, filename):
