@@ -60,10 +60,13 @@ class MarkovBrain():
     def choose_next(self):
         edges = self.markov_dict.get(self.curr_state, 0)
         if(type(edges) is not int):
+            prop = 0
             for next_state in edges.keys():
-                if (random.random() < edges[next_state]):
+                if (random.random() < edges[next_state] + prop):
                     self.curr_state = next_state
                     return self.curr_state
+                else:
+                    prop += edges[next_state]
         return True
 
     def gen_text(self):
@@ -74,13 +77,23 @@ class MarkovBrain():
         prop = 0
         done = False
 
+        '''        
         for i in range(len(self.vector_state)):
             if (random.random() < self.vector_state[i] + prop):
                 self.curr_state = self.states[i]
                 quote += self.curr_state
                 break
-            else:
-                prop += self.vector_state[i]
+            #else:
+                #prop += self.vector_state[i]
+        '''
+
+        
+        a = random.random()
+        print(a)
+        start_i = int(a * len(self.vector_state))
+        self.curr_state = self.states[start_i]
+        quote += self.curr_state
+        
 
         while(done is False):
             next_word = self.choose_next()
@@ -114,5 +127,6 @@ if __name__ == '__main__':
         nn = MarkovBrain()
         nn.train(content)
         nn.save(sys.argv[2])
+        print(nn.gen_text())
     except Exception as e:
         print(e)

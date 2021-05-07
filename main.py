@@ -8,6 +8,7 @@ settings = json.loads(j_data)
 client = discord.Client()
 brain = MarkovBrain().load(settings['MarkovChain'])
 
+
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -17,7 +18,10 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$j'):
-        await message.channel.send(brain.gen_text())
+    if message.content.startswith(settings['commandKey']):
+        quote = brain.gen_text()
+        while(quote == ""):
+            quote = brain.gen_text()
+        await message.channel.send(quote)
 
 client.run(settings['token'])
