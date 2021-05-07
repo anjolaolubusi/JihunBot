@@ -14,25 +14,30 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-help_mesg = "```{0}j - Prints out a statement\n{0}help - Prints out help statement ```"
+help_mesg = "```{0}J - Prints out a statement\n{0}help - Prints out help statement ```"
 bot_description = settings['bot_description']
 
-bot = commands.Bot(command_prefix=settings['commandKey'], description=bot_description)
 brain = MarkovBrain().load(settings['MarkovChain'])
 
-@bot.event
+client = discord.Client()
+
+@client.event
 async def on_ready():
-    print('Logged in as {}'.format(bot.user.name))
+    print('Logged in as {}'.format(client.user))
     print('-------')
 
-@bot.command(description='Prints generated text')
-async def J(ctx):
-    mesg = brain.gen_text()
-    while(mesg == ""):
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    
+    if message.content.startswith(settings['commandKey']+'J') or message.content.startswith(settings['commandKey']+'j'):
         mesg = brain.gen_text()
-    logger.info("{}: {}".format(ctx.author, mesg))
-    print("{}: {}".format(ctx.author, mesg))
-    await ctx.send(mesg)
+        while(mesg == ""):
+            mesg = brain.gen_text()
+        logger.info("{}: {}".format(message.author, mesg))
+        print("{}: {}".format(message.author, mesg))
+        await message.channel.send(mesg)
 
 
-bot.run(settings['token'])
+client.run(settings['token'])
