@@ -61,9 +61,7 @@ class MarkovBrain():
         prop = 0
         done = False
 
-        a = random.random()
-        start_i = int(a * len(self.states))
-        self.curr_state = self.states[start_i]
+        self.curr_state = random.choice(self.states)
         quote += self.curr_state
 
         while(done is False):
@@ -72,8 +70,20 @@ class MarkovBrain():
                 quote += " {}".format(next_word)
             else:
                 done = True
-        
-        return quote
+ 
+        if(random.random() <= 0.3):
+            final_quote = ""
+            quote_split = quote.split(" ")
+            for i in range(len(quote_split)):
+                if(quote_split[i][:1] != ':' or quote_split[i][:1] != '@'):
+                    final_quote += quote_split[i].upper()
+                else:
+                    final_quote += quote_split[i]
+                if(i != len(quote_split)-1):
+                    final_quote += " "
+            return final_quote
+        else:
+            return quote
 
     def save(self, filename):
         fname = filename + '.mchain'
@@ -97,9 +107,9 @@ if __name__ == '__main__':
 
         nn = MarkovBrain()
         nn.train(content)
-        for i in (range(10)):
+        for i in (range(20)):
             print(nn.gen_text())
         
-        nn.save(sys.argv[2])
+        #nn.save(sys.argv[2])
     except Exception as e:
         print(e)
