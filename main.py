@@ -3,8 +3,12 @@ import discord
 from discord.ext import commands
 import json
 import logging
+import os
 
-with open("appsettings.json") as f:
+BASE_DIR = os.getcwd() + '/'
+print(BASE_DIR)
+
+with open(BASE_DIR+"appsettings.json") as f:
     j_data = f.read()
 settings = json.loads(j_data)
 
@@ -17,7 +21,7 @@ logger.addHandler(handler)
 help_mesg = "```{0}J - Prints out a statement\n{0}help - Prints out help statement ```"
 bot_description = settings['bot_description']
 
-brain = MarkovBrain().load(settings['MarkovChain'])
+brain = MarkovBrain().load(BASE_DIR + settings['MarkovChain'])
 
 client = discord.Client()
 
