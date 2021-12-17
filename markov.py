@@ -70,7 +70,10 @@ class MarkovBrain():
                 quote += " {}".format(next_word)
             else:
                 done = True
- 
+        if(quote.__contains__("benji") or quote.__contains__("benjamin")):
+            quote.replace("benji", "alex")
+            quote.replace("benjamin", "alex")
+
         if(random.random() <= 0.3):
             final_quote = ""
             quote_split = quote.split(" ")
